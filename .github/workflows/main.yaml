@@ -23,11 +23,15 @@ jobs:
       - name: Setup buildozer.spec
         run: |
           buildozer init
-          sed -i 's|^#requirements = python3,kivy|requirements = python3,kivy,pyjnius==1.5.0|' buildozer.spec
+          sed -i 's|^#requirements = .*|requirements = python3,kivy,pyjnius==1.5.0|' buildozer.spec
+          # VVV TO JEST NASZA NOWA, KLUCZOWA LINIA VVV
+          # Mówimy Buildozerowi, jakiej DOKŁADNIE wersji narzędzi ma użyć.
+          echo "android.build_tools_version = 34.0.0" >> buildozer.spec
 
       - name: Build with Buildozer
+        # Dodajemy automatyczną akceptację licencji
         run: |
-          buildozer -v android debug
+          yes | buildozer -v android debug
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
