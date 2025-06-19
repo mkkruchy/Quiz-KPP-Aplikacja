@@ -17,15 +17,18 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          # Dodajemy brakujące narzędzia do kompilacji
+          sudo apt-get install -y autoconf automake libtool
           python -m pip install --upgrade pip
           pip install buildozer cython==0.29.32
 
       - name: Setup buildozer.spec
         run: |
           buildozer init
+          # Zmieniamy wymagania na stabilne wersje
           sed -i 's|^#requirements = .*|requirements = python3,kivy,pyjnius==1.5.0|' buildozer.spec
-          # VVV TO JEST NASZA NOWA, KLUCZOWA LINIA VVV
-          # Mówimy Buildozerowi, jakiej DOKŁADNIE wersji narzędzi ma użyć.
+          # Używamy stabilnej wersji build-tools
           echo "android.build_tools_version = 34.0.0" >> buildozer.spec
 
       - name: Build with Buildozer
